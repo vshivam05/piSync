@@ -1,17 +1,32 @@
 import { useEffect, useState } from "react";
 import { getDevices, triggerSync } from "../api/deviceService";
 import formatDate from "../utils/formatDate";
+import { useAuth } from "../context/AuthContext";
 const ROWS_PER_PAGE = 8;
 
 const DeviceTable = () => {
   const [devices, setDevices] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
 
-  useEffect(() => {
-    getDevices().then(setDevices);
-  }, []);
+  const { isLoading, setIsLoading } = useAuth();
+  const fetchDevices = async () => {
+    try {
+      setIsLoading(true);
+      const data = await getDevices();
 
-  //   console.log(devices);
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      setDevices(data);
+    } catch (err) {
+      console.error("Error fetching devices:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchDevices();
+  }, []);
 
   const totalPages = Math.ceil(devices.length / ROWS_PER_PAGE);
 
@@ -55,64 +70,75 @@ const DeviceTable = () => {
 
   return (
     <div className="overflow-x-auto bg-white shadow-md rounded p-4">
-      <table className="min-w-full table-auto">
-        <thead className="bg-gray-200">
-          <tr>
-            <th className="px-4 py-2">Device ID</th>
-            <th className="px-4 py-2">Last Sync Time</th>
-            <th className="px-4 py-2">Sync Status</th>
-            <th className="px-4 py-2">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {currentData.map((d) => (
-            <tr key={d.id} className="text-center border-b">
-              <td className="px-4 py-2">{d.id}</td>
-              <td className="px-4 py-2">{formatDate(d.lastSync)}</td>
-              <td className="px-4 py-2">
-                {d.status === "Success" && "✅ Success"}
-                {d.status === "Failed" && "❌ Failed"}
-                {d.status === "Pending" && "⏳ Pending"}
-              </td>
-              <td className="px-4 py-2">
-                <button
-                  onClick={() => handleSync(d.id)}
-                  className="text-blue-600 underline"
-                >
-                  Sync Now
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      {isLoading ? (
+        <div className="flex justify-center items-center py-8">
+          <div className="w-8 h-8 border-4 border-blue-500 border-dashed rounded-full animate-spin"></div>
+          <span className="ml-4 text-gray-600 font-medium">
+            Loading devices...
+          </span>
+        </div>
+      ) : (
+        <>
+          <table className="min-w-full table-auto">
+            <thead className="bg-gray-200">
+              <tr>
+                <th className="px-4 py-2">Device ID</th>
+                <th className="px-4 py-2">Last Sync Time</th>
+                <th className="px-4 py-2">Sync Status</th>
+                <th className="px-4 py-2">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {currentData.map((d) => (
+                <tr key={d.id} className="text-center border-b">
+                  <td className="px-4 py-2">{d.id}</td>
+                  <td className="px-4 py-2">{formatDate(d.lastSync)}</td>
+                  <td className="px-4 py-2">
+                    {d.status === "Success" && "✅ Success"}
+                    {d.status === "Failed" && "❌ Failed"}
+                    {d.status === "Pending" && "⏳ Pending"}
+                  </td>
+                  <td className="px-4 py-2">
+                    <button
+                      onClick={() => handleSync(d.id)}
+                      className="text-blue-600 underline"
+                    >
+                      Sync Now
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
 
-      <div className="pagination flex flex-wrap justify-center items-center gap-2 mt-6">
-        <button
-          onClick={handlePrev}
-          disabled={currentPage === 1}
-          className={`px-4 py-2 rounded-md ${
-            currentPage === 1
-              ? "bg-gray-300 cursor-not-allowed"
-              : "bg-red-600 hover:bg-red-700 text-white"
-          }`}
-        >
-          Prev
-        </button>
-        {renderPageButtons()}
+          <div className="pagination flex flex-wrap justify-center items-center gap-2 mt-6">
+            <button
+              onClick={handlePrev}
+              disabled={currentPage === 1}
+              className={`px-4 py-2 rounded-md ${
+                currentPage === 1
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : "bg-red-600 hover:bg-red-700 text-white"
+              }`}
+            >
+              Prev
+            </button>
+            {renderPageButtons()}
 
-        <button
-          onClick={handleNext}
-          disabled={currentPage === totalPages}
-          className={`px-4 py-2 rounded-md ${
-            currentPage === totalPages
-              ? "bg-gray-300 cursor-not-allowed"
-              : "bg-red-600 hover:bg-red-700 text-white"
-          }`}
-        >
-          Next
-        </button>
-      </div>
+            <button
+              onClick={handleNext}
+              disabled={currentPage === totalPages}
+              className={`px-4 py-2 rounded-md ${
+                currentPage === totalPages
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : "bg-red-600 hover:bg-red-700 text-white"
+              }`}
+            >
+              Next
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 };

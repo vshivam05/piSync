@@ -6,7 +6,7 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     return localStorage.getItem("pisync-auth") === "true";
   });
-
+  const [isLoading, setIsLoading] = useState(false);
   const login = (username, password) => {
     if (username === "admin" && password === "admin123") {
       localStorage.setItem("pisync-auth", "true");
@@ -22,7 +22,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider
+      value={{ isAuthenticated, login, logout, setIsLoading, isLoading }}
+    >
       {children}
     </AuthContext.Provider>
   );

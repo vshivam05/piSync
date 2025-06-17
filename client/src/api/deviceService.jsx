@@ -4,6 +4,7 @@ const API = "http://localhost:5000/api";
 
 export const getDevices = async () => {
   const res = await axios.get(`${API}/devices`);
+  console.log("get data called");
   return res.data;
 };
 
