@@ -1,0 +1,17 @@
+import axios from "axios";
+
+const API = "http://localhost:5000/api";
+
+export const getDevices = async () => {
+  const res = await axios.get(`${API}/devices`);
+  return res.data;
+};
+
+export const triggerSync = async (id) => {
+  await axios.post(`${API}/sync/${id}`);
+};
+
+export const getErrors = async () => {
+  const res = await axios.get(`${API}/errors`);
+  return res.data;
+};
