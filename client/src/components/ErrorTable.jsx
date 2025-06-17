@@ -83,7 +83,8 @@ const ErrorTable = () => {
               </tr>
             </thead>
             <tbody>
-              {currentData.map((d) => (
+              { currentData && currentData.length > 0 ? (
+              currentData.map((d) => (
                 <tr key={d.id} className="text-center border-b">
                   <td className="px-4 py-2">{d.id}</td>
                   <td className="px-4 py-2">{d.error || "Unknown Error"}</td>
@@ -92,7 +93,16 @@ const ErrorTable = () => {
                     {formatDate(d.lastSync)}
                   </td>
                 </tr>
-              ))}
+              ))
+               ) : (
+      <tr>
+        <td colSpan="4" className="text-center py-4 text-gray-500">
+          No data found
+        </td>
+      </tr>
+    )
+            
+            }
             </tbody>
           </table>
 

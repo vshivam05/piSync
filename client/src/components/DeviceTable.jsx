@@ -88,27 +88,35 @@ const DeviceTable = () => {
                 <th className="px-4 py-2">Action</th>
               </tr>
             </thead>
-            <tbody>
-              {currentData.map((d) => (
-                <tr key={d.id} className="text-center border-b">
-                  <td className="px-4 py-2">{d.id}</td>
-                  <td className="px-4 py-2">{formatDate(d.lastSync)}</td>
-                  <td className="px-4 py-2">
-                    {d.status === "Success" && "✅ Success"}
-                    {d.status === "Failed" && "❌ Failed"}
-                    {d.status === "Pending" && "⏳ Pending"}
-                  </td>
-                  <td className="px-4 py-2">
-                    <button
-                      onClick={() => handleSync(d.id)}
-                      className="text-blue-600 underline"
-                    >
-                      Sync Now
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
+           <tbody>
+    {currentData && currentData.length > 0 ? (
+      currentData.map((d) => (
+        <tr key={d.id} className="text-center border-b">
+          <td className="px-4 py-2">{d.id}</td>
+          <td className="px-4 py-2">{formatDate(d.lastSync)}</td>
+          <td className="px-4 py-2">
+            {d.status === "Success" && "✅ Success"}
+            {d.status === "Failed" && "❌ Failed"}
+            {d.status === "Pending" && "⏳ Pending"}
+          </td>
+          <td className="px-4 py-2">
+            <button
+              onClick={() => handleSync(d.id)}
+              className="text-blue-600 underline"
+            >
+              Sync Now
+            </button>
+          </td>
+        </tr>
+      ))
+    ) : (
+      <tr>
+        <td colSpan="4" className="text-center py-4 text-gray-500">
+          No data found
+        </td>
+      </tr>
+    )}
+  </tbody>
           </table>
 
           <div className="pagination flex flex-wrap justify-center items-center gap-2 mt-6">

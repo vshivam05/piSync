@@ -1,8 +1,7 @@
 import axios from "axios";
 
-// const API = "http://localhost:5000/api";
-const API = "https://pisync.onrender.com/api";
-
+const API = "http://localhost:5000/api";
+// const API = "https://pisync.onrender.com/api";
 
 export const getDevices = async () => {
   const res = await axios.get(`${API}/devices`);
