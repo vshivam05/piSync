@@ -5,10 +5,10 @@ import { useAuth } from "../context/AuthContext";
 const ROWS_PER_PAGE = 8;
 
 const DeviceTable = () => {
-  const [devices, setDevices] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-
-  const { isLoading, setIsLoading } = useAuth();
+    const [devices, setDevices] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    
+    const { isLoading, setIsLoading } = useAuth();
   const fetchDevices = async () => {
     try {
       setIsLoading(true);
