@@ -1,4 +1,3 @@
-// controllers/deviceController.js
 import devices from "../data/devices.js";
 
 export const getAllDevices = (req, res) => {
